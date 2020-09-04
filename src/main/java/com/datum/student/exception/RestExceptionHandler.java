@@ -32,6 +32,16 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(apiError);
     }
 
+
+    @ExceptionHandler(FileStorageException.class)
+    protected ResponseEntity<Object> handleFileStorage(
+            FileStorageException ex, WebRequest request) {
+        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getMessage(), toPath(request));
+        return buildResponseEntity(apiError);
+    }
+
+
+
     @ExceptionHandler(EntityAlreadyExistException.class)
     protected ResponseEntity<Object> handleEntityAlreadyExist(
             EntityAlreadyExistException ex, WebRequest request) {

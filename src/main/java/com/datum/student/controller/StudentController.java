@@ -4,6 +4,7 @@ import com.datum.student.domain.Student;
 import com.datum.student.domain.StudentDto;
 import com.datum.student.exception.custom.EntityNotFoundException;
 import com.datum.student.service.StudentService;
+import org.apache.tomcat.util.http.parser.Authorization;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,14 +33,19 @@ public class StudentController {
 	}
 
 	@GetMapping(value = "/students")
-	public ResponseEntity<List<Student>> get() {
+	public ResponseEntity<List<Student>> get(@RequestHeader(value="Authorization") String authorization) {
+
+		JwtToken jwtToken=new JwtToken(authorization);
 		logger.info("getting student information");
 		List<Student> students=studentService.findAll();
 		return ResponseEntity.ok(students);
 	}
 
 	@GetMapping(value="/students/{id}")
-	public Optional<Student> getById(@PathVariable("id") Long id) {
+	public Optional<Student> getById(@PathVariable("id") Long id, @RequestHeader("Authorization") String authorization) {
+
+
+
 		logger.info("getting student information");
 		Optional<Student> students=studentService.findById(id);
 		return students;
@@ -52,7 +58,7 @@ public class StudentController {
 	}
 
 	@PostMapping(value="/students")
-	public ResponseEntity<Void> add(@RequestBody Student student){
+	public ResponseEntity<Void> add(@RequestBody Student student,@RequestHeader(value = "Authorization") String authorization){
 		logger.info("adding student information");
 		studentService.save(student);
 		return new ResponseEntity<>(HttpStatus.CREATED);
